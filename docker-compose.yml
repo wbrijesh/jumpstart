@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 
 services:
   server:
@@ -8,11 +8,3 @@ services:
       - ./server:/go/src/app
     ports:
       - "4000:4000"
-  client:
-    build: ./client/
-    command: npm run dev
-    volumes:
-      - ./client:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - "3000:3000"
