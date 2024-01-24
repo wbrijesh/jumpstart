@@ -3,18 +3,24 @@ package main
 import (
 	"jumpstart/database"
 	"jumpstart/handlers"
+	customMiddleware "jumpstart/middleware"
 	"jumpstart/models"
 
 	"github.com/labstack/echo/v4"
+	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	echo := echo.New()
+	e := echo.New()
 	dbConn := database.GetDbConnection()
+
+	e.Use(customMiddleware.ContextDB(dbConn))
+	e.Use(echoMiddleware.CORS())
 
 	models.CreateUserIfNotExists(dbConn)
 
-	echo.GET("/", handlers.HelloHandler)
+	e.GET("/", handlers.HelloHandler)
+	e.POST("/api/v0/new-user", handlers.UserRegistrationHandler)
 
-	echo.Logger.Fatal(echo.Start(":4000"))
+	e.Logger.Fatal(e.Start(":4000"))
 }
