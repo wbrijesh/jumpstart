@@ -1,15 +1,20 @@
 package main
 
 import (
-  "fmt"
-  "net/http"
-  "log"
+	"jumpstart/database"
+	"jumpstart/handlers"
+	"jumpstart/models"
+
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
-  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "hello")
-  })
-  fmt.Println("Server started on port 4000")
-  log.Fatal(http.ListenAndServe(":4000", nil))
+	echo := echo.New()
+	dbConn := database.GetDbConnection()
+
+	models.CreateUserIfNotExists(dbConn)
+
+	echo.GET("/", handlers.HelloHandler)
+
+	echo.Logger.Fatal(echo.Start(":4000"))
 }
